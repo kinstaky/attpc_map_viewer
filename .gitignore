@@ -1,0 +1,7 @@
+# IDE
+.vscode
+.marscode
+
+# python environment
+.venv
+.python-version

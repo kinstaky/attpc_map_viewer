@@ -1,0 +1,5 @@
+polars
+matplotlib
+mplcursors
+ipympl
+ipykernel
