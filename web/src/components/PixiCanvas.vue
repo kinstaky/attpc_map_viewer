@@ -307,7 +307,18 @@
   <div ref="canvas" class="pixi-root"></div>
   <v-row>
     <v-col cols="6" offset="3" class="d-flex justify-center">
-      x: {{ mouseX.toFixed(2) }} mm, y: {{ mouseY.toFixed(2) }} mm
+      <p>
+        x: {{ mouseX.toFixed(2) }} mm, y: {{ mouseY.toFixed(2) }} mm
+        <v-tooltip text="In fixed global coordinate system.">
+          <template v-slot:activator="{ props: activatorProps }">
+            <v-btn
+              variant="icon"
+              icon="mdi-information-outline"
+              v-bind="activatorProps"
+            />
+          </template>
+        </v-tooltip>
+      </p>
     </v-col>
   </v-row>
 </template>
