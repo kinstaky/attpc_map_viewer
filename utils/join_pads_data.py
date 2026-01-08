@@ -33,12 +33,14 @@ def main():
 	edge = 4.908235
 	offset = edge * (3**0.5) / 6
 	joined = joined.with_columns(
-		pl.col("x").alias("cx"),
+		(
+			(-pl.col("x")).alias("cy")
+		),
 		(
 			pl.when(pl.col("direction") == 0)
-			.then(pl.col("y") - offset*pl.col("scale"))
-			.otherwise(pl.col("y") + offset*pl.col("scale"))
-			.alias("cy")
+			.then(-pl.col("y") + offset*pl.col("scale"))
+			.otherwise(-pl.col("y") - offset*pl.col("scale"))
+			.alias("cx")
 		)
 	)
 

@@ -1,7 +1,6 @@
 <script setup>
   import { onUnmounted, onMounted, ref, computed, watch } from "vue"
   import { Application, Container, FillGradient, Graphics, Point, RenderLayer } from "pixi.js"
-import { attachedRoot } from "vuetify/lib/util/dom.mjs"
 
   const props = defineProps({
     rendered: {
@@ -29,7 +28,7 @@ import { attachedRoot } from "vuetify/lib/util/dom.mjs"
   const mouseX = ref(0)
   const mouseY = ref(0)
   let lastClickSelect = false
-  const initXScale = 1.3
+  const initXScale = -1.3
   const initYScale = -1.3
   let scale = 1
 
@@ -61,7 +60,6 @@ import { attachedRoot } from "vuetify/lib/util/dom.mjs"
 
   function restorePad(pad, from) {
     floatLayer.detachAll()
-    console.log(floatLayer.renderLayerChildren)
     pad.clear()
     pad.poly(from.points)
     pad.fill(from.color)
@@ -83,14 +81,14 @@ import { attachedRoot } from "vuetify/lib/util/dom.mjs"
 
   function getPadOrthoPoints(direction) {
     return direction == 0
-      ? [-half_edge,-half_height, half_edge,-half_height, 0.0,half_height]
-      : [-half_edge,half_height, half_edge,half_height, 0.0,-half_height]
+      ? [-half_height,-half_edge, -half_height, half_edge, half_height,0.0]
+      : [half_height,-half_edge, half_height,half_edge, -half_height,0.0]
   }
 
   function getPadPoints(direction) {
-    return direction == 0
-      ? [-half_edge,-height/3, half_edge,-height/3, 0.0,height*2/3]
-      : [-half_edge,height/3, half_edge,height/3, 0.0,-height*2/3]
+    return direction == 1
+      ? [-height/3,-half_edge, -height/3,half_edge, height*2/3,0.0]
+      : [height/3,-half_edge, height/3,half_edge, -height*2/3,0.0]
   }
 
   function getPadOrthoPosition(padData) {
@@ -155,13 +153,12 @@ import { attachedRoot } from "vuetify/lib/util/dom.mjs"
         savePad.scale = padData[i].scale
         pad.clear()
         initPad(pad, {
-          points: getPadOrthoPoints(padData[i].direction),
+          points: getPadPoints(padData[i].direction),
           color: selectedColor,
           position: getPadPosition(padData[i]),
           scale: padData[i].scale*floatScale,
         })
         floatLayer.attach(pad)
-        console.log(floatLayer.renderLayerChildren)
       })
       container.addChild(pad)
       pads.push(pad)
