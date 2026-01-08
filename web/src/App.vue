@@ -54,7 +54,7 @@
 
   function applyRenderColor(index, cobo, asad, aget, channel, color) {
     showRenderColorMenu.value = false
-    if (!index) {
+    if (index === null) {
       addRendered(cobo, asad, aget, channel, color)
     } else {
       rendered[index] = {
@@ -65,7 +65,6 @@
         color: color
       }
     }
-    console.log(rendered)
   }
 
   // select layer
