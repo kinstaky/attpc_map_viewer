@@ -198,6 +198,7 @@
       </v-row>
       <PixiCanvas
         :rendered="rendered"
+        :view="selectedView"
       />
     </v-main>
   </v-app>

@@ -6,6 +6,10 @@
     rendered: {
       type: Array,
       default: [],
+    },
+    view: {
+      type: String,
+      required: true,
     }
   })
 
@@ -28,9 +32,11 @@
   const mouseX = ref(0)
   const mouseY = ref(0)
   let lastClickSelect = false
-  const initXScale = -1.3
+  const initXScale = 1.3
   const initYScale = -1.3
-  let scale = 1
+  let zoomScale = 1
+  let revertX = props.view == "Upstream" ? -1 : 1
+  let revertY = 1
 
   let container
   let onMouseDown
@@ -181,8 +187,8 @@
 
     container.x = app.screen.width / 2
     container.y = app.screen.height / 2
-    container.scale.x = initXScale
-    container.scale.y = initYScale
+    container.scale.x = initXScale * zoomScale * revertX
+    container.scale.y = initYScale * zoomScale * revertY
 
     function getClipXY(evt) {
       const rect = app.canvas.getBoundingClientRect()
@@ -233,13 +239,13 @@
       const {x, y} = getClipXY(evt)
       const mouseWorldBefore = container.toLocal(new Point(x, y))
       const zoomFactor = evt.deltaY < 0 ? 1.1 : 1/1.1
-      scale *= zoomFactor
-      scale = Math.min(Math.max(scale, 0.8), 12)
-      container.scale.x = scale * initXScale
-      container.scale.y = scale * initYScale
+      zoomScale *= zoomFactor
+      zoomScale = Math.min(Math.max(zoomScale, 0.8), 12)
+      container.scale.x = initXScale * zoomScale * revertX
+      container.scale.y = initYScale * zoomScale * revertY
       const mouseWorldAfter = container.toLocal(new Point(x, y))
-      container.x += (mouseWorldAfter.x - mouseWorldBefore.x) * scale*initXScale
-      container.y += (mouseWorldAfter.y - mouseWorldBefore.y) * scale*initYScale
+      container.x += (mouseWorldAfter.x - mouseWorldBefore.x) * initXScale*zoomScale*revertX
+      container.y += (mouseWorldAfter.y - mouseWorldBefore.y) * initYScale*zoomScale*revertY
     }
 
     canvas.value.addEventListener("mousedown", onMouseDown)
@@ -286,6 +292,17 @@
       savePad.color = getRenderColor(padData[selectedPad.value.index], newRendered)
     }
     oldRendered = [...props.rendered]
+  })
+
+  watch(() => props.view, (newView) => {
+    console.log(newView == "Upstream")
+    if (newView == "Upstream") {
+      revertX = -1
+    } else {
+      revertX = 1
+    }
+    container.scale.x = initXScale * zoomScale * revertX
+    container.scale.y = initYScale * zoomScale * revertY
   })
 
 </script>
